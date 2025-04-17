@@ -1,13 +1,17 @@
-const ollama = require('ollama');
-const fs = require('fs/promises');
+// Using import instead of require for ESM compatibility
+import ollama from 'ollama';
+import { writeFile } from 'fs/promises';
 
-// Array of models to test - add your installed models here
+// Array of models to test - with your specific models
 const MODELS = [
-  'llama3',
-  'mistral',
-  'gemma',
-  'phi3',
-  'orca-mini',
+  "deepseek-r1:8b-llama-distill-q4_K_M",
+  "deepseek-r1:14b",
+  "mistral-nemo:latest",
+  "gemma3:1b",
+  "deepseek-r1:1.5b",
+  "phi4:latest",
+  "phi:2.7b",
+  "mistral:7b",
   // Add more models as needed
 ];
 
@@ -134,7 +138,7 @@ async function runSpeedComparison() {
   }
   
   // Save results to file
-  await fs.writeFile(
+  await writeFile(
     TEST_CONFIG.outputFile,
     JSON.stringify({ 
       timestamp: new Date().toISOString(),
