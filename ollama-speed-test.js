@@ -1,5 +1,5 @@
-import { Ollama } from 'ollama';
-import { writeFile } from 'fs/promises';
+import { Ollama } from "ollama";
+import { writeFile } from "fs/promises";
 
 // Array of models to test - with your specific models
 const MODELS = [
@@ -16,8 +16,8 @@ const MODELS = [
 
 // Test configuration
 const TEST_CONFIG = {
-  promptToUse: "Explain quantum computing in simple terms.",
-  numRuns: 3, // Number of runs per model for averaging results
+  promptToUse: "Explain about the heartbleed vulnerability in detail.",
+  numRuns: 2, // Number of runs per model for averaging results
   outputFile: "speed-results.json",
 };
 
@@ -64,7 +64,11 @@ async function testModelSpeed(modelName) {
       console.log(
         `  Response time: ${timeTaken}ms (approx. ${tokensPerSecond} tokens/sec)`
       );
-      console.log(`  Total tokens: ~${Math.round(totalTokens)} (input: ~${Math.round(inputTokens)}, output: ~${Math.round(outputTokens)})`);
+      console.log(
+        `  Total tokens: ~${Math.round(totalTokens)} (input: ~${Math.round(
+          inputTokens
+        )}, output: ~${Math.round(outputTokens)})`
+      );
 
       results.push({
         runNumber: i + 1,
@@ -73,7 +77,7 @@ async function testModelSpeed(modelName) {
         tokens: {
           input: Math.round(inputTokens),
           output: Math.round(outputTokens),
-          total: Math.round(totalTokens)
+          total: Math.round(totalTokens),
         },
         approximateTokensPerSecond: parseFloat(tokensPerSecond),
       });
@@ -95,7 +99,7 @@ async function testModelSpeed(modelName) {
   let averageTokenCounts = {
     input: 0,
     output: 0,
-    total: 0
+    total: 0,
   };
 
   if (validRuns.length > 0) {
@@ -105,12 +109,21 @@ async function testModelSpeed(modelName) {
     averageTokensPerSecond =
       validRuns.reduce((sum, run) => sum + run.approximateTokensPerSecond, 0) /
       validRuns.length;
-    
+
     // Calculate average token counts
     averageTokenCounts = {
-      input: Math.round(validRuns.reduce((sum, run) => sum + run.tokens.input, 0) / validRuns.length),
-      output: Math.round(validRuns.reduce((sum, run) => sum + run.tokens.output, 0) / validRuns.length),
-      total: Math.round(validRuns.reduce((sum, run) => sum + run.tokens.total, 0) / validRuns.length)
+      input: Math.round(
+        validRuns.reduce((sum, run) => sum + run.tokens.input, 0) /
+          validRuns.length
+      ),
+      output: Math.round(
+        validRuns.reduce((sum, run) => sum + run.tokens.output, 0) /
+          validRuns.length
+      ),
+      total: Math.round(
+        validRuns.reduce((sum, run) => sum + run.tokens.total, 0) /
+          validRuns.length
+      ),
     };
   }
 
