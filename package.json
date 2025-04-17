@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "Tool to compare response speeds of different Ollama models",
   "main": "ollama-speed-test.js",
+  "type": "module",
   "scripts": {
     "test": "node ollama-speed-test.js"
   },
