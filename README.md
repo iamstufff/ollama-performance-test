@@ -35,10 +35,10 @@ Edit the `ollama-speed-test.js` file to:
 1. Modify the `MODELS` array to include the models you have installed:
    ```javascript
    const MODELS = [
-     'llama3',
-     'mistral',
-     'gemma',
-     // Add your installed models here
+     "deepseek-r1:8b-llama-distill-q4_K_M",
+     "deepseek-r1:14b",
+     "mistral-nemo:latest",
+     // Add more models as needed
    ];
    ```
 
@@ -79,10 +79,10 @@ Example output:
 ```
 --- RESULTS SUMMARY ---
 Models ranked by response time (fastest first):
-1. phi3: 3520.67ms (24.85 tokens/sec)
-2. gemma: 5142.33ms (16.74 tokens/sec)
-3. llama3: 6824.00ms (12.88 tokens/sec)
-4. mistral: 7345.33ms (11.45 tokens/sec)
+1. deepseek-r1:1.5b: 1520.67ms (28.85 tokens/sec)
+2. phi:2.7b: 2542.33ms (22.74 tokens/sec)
+3. gemma3:1b: 3124.00ms (18.88 tokens/sec)
+4. mistral:7b: 4345.33ms (11.45 tokens/sec)
 
 Detailed results saved to speed-results.json
 ```
@@ -92,6 +92,14 @@ Detailed results saved to speed-results.json
 - Make sure the Ollama server is running before starting tests
 - Verify that all models listed in the `MODELS` array are installed in Ollama
 - If a model consistently fails, try running it directly through Ollama to check for issues
+- If you encounter an ESM error, ensure that `"type": "module"` is in your package.json
+
+## Notes About ESM
+
+This project uses ES modules. If you encounter any issues with imports, make sure:
+- Your package.json has `"type": "module"`
+- You're using `import` syntax instead of `require()`
+- Your Node.js version supports ES modules (v14+)
 
 ## License
 
