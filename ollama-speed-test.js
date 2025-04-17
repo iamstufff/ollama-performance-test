@@ -54,17 +54,27 @@ async function testModelSpeed(modelName) {
       const endTime = Date.now();
       const timeTaken = endTime - startTime;
 
-      // Calculate tokens per second
-      const outputTokens = response.message?.content?.length / 4 || 0; // rough approximation
+      // Calculate tokens
+      const responseContent = response.message?.content || "";
+      const inputTokens = TEST_CONFIG.promptToUse.length / 4; // rough approximation
+      const outputTokens = responseContent.length / 4; // rough approximation
+      const totalTokens = inputTokens + outputTokens;
       const tokensPerSecond = (outputTokens / (timeTaken / 1000)).toFixed(2);
 
       console.log(
         `  Response time: ${timeTaken}ms (approx. ${tokensPerSecond} tokens/sec)`
       );
+      console.log(`  Total tokens: ~${Math.round(totalTokens)} (input: ~${Math.round(inputTokens)}, output: ~${Math.round(outputTokens)})`);
 
       results.push({
         runNumber: i + 1,
         responseTime: timeTaken,
+        response: responseContent,
+        tokens: {
+          input: Math.round(inputTokens),
+          output: Math.round(outputTokens),
+          total: Math.round(totalTokens)
+        },
         approximateTokensPerSecond: parseFloat(tokensPerSecond),
       });
     } catch (error) {
@@ -82,6 +92,11 @@ async function testModelSpeed(modelName) {
   const validRuns = results.filter((r) => !r.error);
   let averageTime = null;
   let averageTokensPerSecond = null;
+  let averageTokenCounts = {
+    input: 0,
+    output: 0,
+    total: 0
+  };
 
   if (validRuns.length > 0) {
     averageTime =
@@ -90,6 +105,13 @@ async function testModelSpeed(modelName) {
     averageTokensPerSecond =
       validRuns.reduce((sum, run) => sum + run.approximateTokensPerSecond, 0) /
       validRuns.length;
+    
+    // Calculate average token counts
+    averageTokenCounts = {
+      input: Math.round(validRuns.reduce((sum, run) => sum + run.tokens.input, 0) / validRuns.length),
+      output: Math.round(validRuns.reduce((sum, run) => sum + run.tokens.output, 0) / validRuns.length),
+      total: Math.round(validRuns.reduce((sum, run) => sum + run.tokens.total, 0) / validRuns.length)
+    };
   }
 
   return {
@@ -98,6 +120,7 @@ async function testModelSpeed(modelName) {
     averageTokensPerSecond: averageTokensPerSecond
       ? `${averageTokensPerSecond.toFixed(2)}`
       : "N/A",
+    averageTokenCounts: averageTokenCounts,
     runs: results,
   };
 }
@@ -138,7 +161,7 @@ async function runSpeedComparison() {
     console.log(
       `${index + 1}. ${result.model}: ${result.averageResponseTime} (${
         result.averageTokensPerSecond
-      } tokens/sec)`
+      } tokens/sec, avg total tokens: ${result.averageTokenCounts.total})`
     );
   });
 
