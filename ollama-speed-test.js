@@ -1,5 +1,5 @@
-const ollama = require("ollama");
-const fs = require("fs/promises");
+import { Ollama } from 'ollama';
+import { writeFile } from 'fs/promises';
 
 // Array of models to test - with your specific models
 const MODELS = [
@@ -20,6 +20,9 @@ const TEST_CONFIG = {
   numRuns: 3, // Number of runs per model for averaging results
   outputFile: "speed-results.json",
 };
+
+// Initialize Ollama client
+const ollama = new Ollama();
 
 // Function to measure response time for a single model
 async function testModelSpeed(modelName) {
