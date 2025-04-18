@@ -55,7 +55,10 @@ async function testModelSpeed(modelName) {
       const timeTaken = endTime - startTime;
 
       // Calculate tokens
-      const responseContent = response.message?.content || "";
+      const rawContent = response.message?.content || "";
+      const responseContent = rawContent
+        .replace(/<think>[\s\S]*?<\/think>/gi, "")
+        .trim();
       const inputTokens = TEST_CONFIG.promptToUse.length / 4; // rough approximation
       const outputTokens = responseContent.length / 4; // rough approximation
       const totalTokens = inputTokens + outputTokens;
